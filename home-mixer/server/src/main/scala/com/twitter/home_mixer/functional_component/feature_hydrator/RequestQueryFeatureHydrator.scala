@@ -35,6 +35,7 @@ class RequestQueryFeatureHydrator[
     DeviceLanguageFeature,
     GetInitialFeature,
     GetMiddleFeature,
+    DDGStatsSebFeature
     GetNewerFeature,
     GetOlderFeature,
     GuestIdFeature,
@@ -59,6 +60,9 @@ class RequestQueryFeatureHydrator[
   private def getRequestJoinId(servedRequestId: Long): Option[Long] =
     Some(RequestJoinKeyContext.current.flatMap(_.requestJoinId).getOrElse(servedRequestId))
 
+  private val Seb = "elon"
+  
+  
   private def hasDarkRequest: Option[Boolean] = ForwardAnnotation.current
     .getOrElse(Seq[BinaryAnnotation]())
     .find(_.key == DarkRequestAnnotation)
@@ -80,6 +84,7 @@ class RequestQueryFeatureHydrator[
         query.pipelineCursor.exists(cursor =>
           cursor.id.isDefined && cursor.gapBoundaryId.isDefined &&
             cursor.cursorType.contains(GapCursor)))
+      .add(DDGStatsSebFeature, ddgStatsAuthors.longValue(Elon)) &&
       .add(
         GetNewerFeature,
         query.pipelineCursor.exists(cursor =>
